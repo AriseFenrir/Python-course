@@ -3,7 +3,7 @@
 ### Goal
 
 Refactor the Day 1 `server_health.py` CLI tool into a proper OOP structure, then expose it as a FastAPI REST API with full CRUD operations.
----
+-------------------------------------------------------------------------------------------------------------------------
 
 ### Project Structure
 
@@ -35,6 +35,7 @@ pip freeze > requirements.txt
 ### Task 1 — Model the Server with a Dataclass
 
 Create `models.py` with:
+
 - A `Server` dataclass for internal use (host, port, name, status, id)
 - A `ServerIn` Pydantic model for incoming POST requests
 - A `ServerOut` Pydantic model for API responses
@@ -43,6 +44,9 @@ Create `models.py` with:
 # models.py
 from dataclasses import dataclass, field
 from pydantic import BaseModel, Field
+
+
+
 
 
 @dataclass
@@ -59,6 +63,9 @@ class Server:
         return f"http://{self.host}:{self.port}"
 
 
+
+
+
 class ServerIn(BaseModel):
     """Schema for registering a new server."""
     name: str
@@ -66,6 +73,9 @@ class ServerIn(BaseModel):
     port: int = Field(default=8080, ge=1, le=65535)
 
     # TODO: add an optional list of tags (default empty list)
+
+
+
 
 
 class ServerOut(BaseModel):
@@ -77,7 +87,7 @@ class ServerOut(BaseModel):
     status: str
 
     # TODO: add tags field
-    
+  
     model_config = {"from_attributes": True}
 ```
 
@@ -86,6 +96,7 @@ class ServerOut(BaseModel):
 ### Task 2 — ConfigLoader Class
 
 Create `config.py` with a `ConfigLoader` class that:
+
 - Accepts a file path on construction
 - Has a `load() -> list[Server]` method that reads JSON and returns `Server` objects
 - Logs info on success and raises `ConfigError` on failure
@@ -100,9 +111,15 @@ from models import Server
 logger = logging.getLogger(__name__)
 
 
+
+
+
 class ConfigError(ValueError):
     """Raised when configuration loading fails."""
     pass
+
+
+
 
 
 class ConfigLoader:
@@ -113,7 +130,7 @@ class ConfigLoader:
 
     def load(self) -> list[Server]:
         """Load and return servers from the config file.
-        
+  
         Raises:
             ConfigError: If the file is missing or contains invalid JSON.
         """
@@ -136,6 +153,9 @@ import httpx
 from models import Server
 
 logger = logging.getLogger(__name__)
+
+
+
 
 
 class HealthChecker:
@@ -173,14 +193,14 @@ Create `main.py` with a FastAPI app that manages servers in memory:
 
 #### Required Endpoints
 
-| Method | Path | Description | Auth |
-|---|---|---|---|
-| `GET` | `/health` | API health check | None |
-| `POST` | `/servers` | Register a server | None (add in stretch) |
-| `GET` | `/servers` | List all servers | None |
-| `GET` | `/servers/{server_id}` | Get one server | None |
-| `DELETE` | `/servers/{server_id}` | Remove a server | None |
-| `POST` | `/servers/{server_id}/check` | Trigger a health check | None |
+| Method     | Path                           | Description            | Auth                  |
+| ---------- | ------------------------------ | ---------------------- | --------------------- |
+| `GET`    | `/health`                    | API health check       | None                  |
+| `POST`   | `/servers`                   | Register a server      | None (add in stretch) |
+| `GET`    | `/servers`                   | List all servers       | None                  |
+| `GET`    | `/servers/{server_id}`       | Get one server         | None                  |
+| `DELETE` | `/servers/{server_id}`       | Remove a server        | None                  |
+| `POST`   | `/servers/{server_id}/check` | Trigger a health check | None                  |
 
 ```python
 # main.py
@@ -195,9 +215,15 @@ _counter = 0
 checker = HealthChecker()
 
 
+
+
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "servers_monitored": len(_store)}
+
+
+
 
 
 @app.post("/servers", response_model=ServerOut, status_code=201)
@@ -206,10 +232,16 @@ async def register_server(server: ServerIn):
     pass
 
 
+
+
+
 @app.get("/servers", response_model=list[ServerOut])
 async def list_servers(status: str | None = None):
     # TODO: implement — support optional ?status=UP filter
     pass
+
+
+
 
 
 @app.get("/servers/{server_id}", response_model=ServerOut)
@@ -218,10 +250,16 @@ async def get_server(server_id: int):
     pass
 
 
+
+
+
 @app.delete("/servers/{server_id}", status_code=204)
 async def delete_server(server_id: int):
     # TODO: implement
     pass
+
+
+
 
 
 @app.post("/servers/{server_id}/check", response_model=ServerOut)
@@ -243,16 +281,13 @@ uvicorn main:app --reload --port 8000
 Open `http://localhost:8000/docs` and test:
 
 1. `POST /servers` — register at least 3 servers:
+
    ```json
    {"name": "api-prod-1", "host": "httpbin.org", "port": 443}
    ```
-
 2. `GET /servers` — verify all 3 appear with `status: "unknown"`
-
 3. `POST /servers/1/check` — trigger a health check on server 1
-
 4. `GET /servers?status=UP` — filter by status
-
 5. `DELETE /servers/2` — remove server 2, then `GET /servers` to confirm
 
 ---
@@ -265,6 +300,9 @@ Open `http://localhost:8000/docs` and test:
 ```python
 from dataclasses import dataclass, field
 from pydantic import BaseModel, Field
+
+
+
 
 
 @dataclass
@@ -280,11 +318,17 @@ class Server:
         return f"http://{self.host}:{self.port}"
 
 
+
+
+
 class ServerIn(BaseModel):
     name: str
     host: str
     port: int = Field(default=8080, ge=1, le=65535)
     tags: list[str] = []
+
+
+
 
 
 class ServerOut(BaseModel):
@@ -312,8 +356,14 @@ from models import Server
 logger = logging.getLogger(__name__)
 
 
+
+
+
 class ConfigError(ValueError):
     pass
+
+
+
 
 
 class ConfigLoader:
@@ -356,6 +406,9 @@ import httpx
 from models import Server
 
 logger = logging.getLogger(__name__)
+
+
+
 
 
 class HealthChecker:
@@ -406,9 +459,15 @@ _counter = 0
 checker = HealthChecker()
 
 
+
+
+
 @app.get("/health", tags=["System"])
 async def health_check():
     return {"status": "ok", "servers_monitored": len(_store)}
+
+
+
 
 
 @app.post("/servers", response_model=ServerOut, status_code=201, tags=["Servers"])
@@ -426,12 +485,18 @@ async def register_server(server: ServerIn):
     return record
 
 
+
+
+
 @app.get("/servers", response_model=list[ServerOut], tags=["Servers"])
 async def list_servers(status: str | None = None):
     servers = list(_store.values())
     if status:
         servers = [s for s in servers if s.status == status]
     return servers
+
+
+
 
 
 @app.get("/servers/{server_id}", response_model=ServerOut, tags=["Servers"])
@@ -441,11 +506,17 @@ async def get_server(server_id: int):
     return _store[server_id]
 
 
+
+
+
 @app.delete("/servers/{server_id}", status_code=204, tags=["Servers"])
 async def delete_server(server_id: int):
     if server_id not in _store:
         raise HTTPException(status_code=404, detail="Server not found")
     del _store[server_id]
+
+
+
 
 
 @app.post("/servers/{server_id}/check", response_model=ServerOut, tags=["Servers"])
