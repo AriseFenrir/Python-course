@@ -1,4 +1,4 @@
-# Day 2 — FastAPI Introduction 
+# Day 2 — FastAPI Introduction
 
 ---
 
@@ -6,14 +6,14 @@
 
 FastAPI is the framework we use for the entire course capstone. Here's how it compares:
 
-| Feature | Flask | FastAPI |
-|---|---|---|
-| Type safety | Manual | Built-in via Pydantic |
-| Async support | Extension needed | Native (`async def`) |
-| Auto API docs | Manual | Swagger UI at `/docs`, ReDoc at `/redoc` |
-| Performance | Synchronous (WSGI) | Async (ASGI) — near Go-level |
-| Request validation | Manual | Automatic via Pydantic models |
-| IDE autocomplete | Limited | Full — thanks to type hints |
+| Feature            | Flask              | FastAPI                                     |
+| ------------------ | ------------------ | ------------------------------------------- |
+| Type safety        | Manual             | Built-in via Pydantic                       |
+| Async support      | Extension needed   | Native (`async def`)                      |
+| Auto API docs      | Manual             | Swagger UI at`/docs`, ReDoc at `/redoc` |
+| Performance        | Synchronous (WSGI) | Async (ASGI) — near Go-level               |
+| Request validation | Manual             | Automatic via Pydantic models               |
+| IDE autocomplete   | Limited            | Full — thanks to type hints                |
 
 ---
 
@@ -75,6 +75,7 @@ class ServerOut(ServerIn):
 ```
 
 **What Pydantic does automatically:**
+
 - Rejects requests where `port` is not an integer
 - Rejects requests where `port` is outside 1–65535
 - Generates the JSON Schema used by Swagger UI
@@ -131,13 +132,13 @@ async def delete_server(server_id: int):
 
 **HTTP method conventions:**
 
-| Method | Use for | Success code |
-|---|---|---|
-| `GET` | Retrieve data | 200 |
-| `POST` | Create a resource | 201 |
-| `PUT` | Replace a resource | 200 |
-| `PATCH` | Update part of a resource | 200 |
-| `DELETE` | Remove a resource | 204 (no content) |
+| Method     | Use for                   | Success code     |
+| ---------- | ------------------------- | ---------------- |
+| `GET`    | Retrieve data             | 200              |
+| `POST`   | Create a resource         | 201              |
+| `PUT`    | Replace a resource        | 200              |
+| `PATCH`  | Update part of a resource | 200              |
+| `DELETE` | Remove a resource         | 204 (no content) |
 
 ---
 
@@ -156,6 +157,7 @@ raise HTTPException(status_code=500, detail="Internal error")
 ```
 
 FastAPI serialises these to:
+
 ```json
 {
   "detail": "Server not found"
@@ -255,10 +257,10 @@ asyncio.run(check_all(urls))
 
 FastAPI generates interactive docs from your code with zero configuration.
 
-| URL | Tool | Use |
-|---|---|---|
-| `/docs` | Swagger UI | Interactive — test endpoints in the browser |
-| `/redoc` | ReDoc | Read-only — clean reference documentation |
+| URL               | Tool         | Use                                          |
+| ----------------- | ------------ | -------------------------------------------- |
+| `/docs`         | Swagger UI   | Interactive — test endpoints in the browser |
+| `/redoc`        | ReDoc        | Read-only — clean reference documentation   |
 | `/openapi.json` | OpenAPI spec | Machine-readable — can generate client SDKs |
 
 Enhance your docs with metadata:

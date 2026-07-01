@@ -1,0 +1,45 @@
+{
+  "books": [
+    {
+      "title": "Python Programming",
+      "author": "John Doe",
+      "isbn": "978-1234567890",
+      "available": false
+    },
+    {
+      "title": "Clean Code",
+      "author": "Robert C. Martin",
+      "isbn": "978-0132350884",
+      "available": false
+    },
+    {
+      "title": "Design Patterns",
+      "author": "Gang of Four",
+      "isbn": "978-0201633610",
+      "available": false
+    },
+    {
+      "title": "The Pragmatic Programmer",
+      "author": "David Thomas",
+      "isbn": "978-0135957059",
+      "available": false
+    }
+  ],
+  "users": [
+    {
+      "name": "Alice",
+      "user_id": 101,
+      "borrowed_books": []
+    },
+    {
+      "name": "Bob",
+      "user_id": 102,
+      "borrowed_books": [
+        "Python Programming",
+        "Clean Code",
+        "Design Patterns",
+        "The Pragmatic Programmer"
+      ]
+    }
+  ]
+}
